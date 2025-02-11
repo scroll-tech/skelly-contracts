@@ -26,7 +26,7 @@ import {
     ProfileAlreadyMinted
 } from "../Errors.sol";
 
-contract ClonableBeaconProxy is BeaconProxy {
+contract CloneableBeaconProxy is BeaconProxy {
     constructor() BeaconProxy(msg.sender, "") {}
 }
 
@@ -42,8 +42,8 @@ contract ProfileRegistry is OwnableUpgradeable, EIP712Upgradeable, IBeacon, IPro
     /// @notice The mint fee for each profile without referral.
     uint256 public constant MINT_FEE = 0.001 ether;
 
-    /// @notice The codehash for `ClonableBeaconProxy` contract.
-    bytes32 public constant cloneableProxyHash = keccak256(type(ClonableBeaconProxy).creationCode);
+    /// @notice The codehash for `CloneableBeaconProxy` contract.
+    bytes32 public constant cloneableProxyHash = keccak256(type(CloneableBeaconProxy).creationCode);
 
     /**
      *
@@ -220,7 +220,7 @@ contract ProfileRegistry is OwnableUpgradeable, EIP712Upgradeable, IBeacon, IPro
     function _mintProfile(address account, string calldata username, address referrer) internal returns (address) {
         // deployment will fail and this function will revert if contract `salt` is not unique
         bytes32 salt = keccak256(abi.encode(account));
-        address profile = address(new ClonableBeaconProxy{salt: salt}());
+        address profile = address(new CloneableBeaconProxy{salt: salt}());
 
         // mark the profile is minted
         isProfileMinted[profile] = true;
